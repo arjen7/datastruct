@@ -6,7 +6,7 @@ private:
     std::vector<graph*> child;
     std::vector<int> distange;
     std::string name;
-    std::vector<std::string> path;
+    std::string path;
     int *pathdistange=NULL;
     bool visit=false;
     graph* beforeNode=NULL;
@@ -19,7 +19,7 @@ public:
         this->child.push_back(node);
         this->distange.push_back(distange);
     }
-    std::vector<std::string> getpath(){
+    std::string getpath(){
         return this->path;
     }
     int* getpathdistange(){
@@ -28,22 +28,20 @@ public:
     void shortestpath(graph* root){
         if (root->pathdistange==NULL)
         {
-            root->path.push_back(root->name);
+            root->path=root->name;
             root->pathdistange=new int(0);
         }
         for (int i = 0; i < root->child.size(); i++)
         {
             if(root->child.at(i)->pathdistange==NULL){
-                root->child.at(i)->path.insert(root->child.at(i)->path.end(),root->path.begin(),root->path.end());
-                root->child.at(i)->path.push_back(root->child.at(i)->name);
+                root->child.at(i)->path=root->path+root->child.at(i)->name;
                 root->child.at(i)->pathdistange=new int(*root->pathdistange+root->distange.at(i));
                 shortestpath(root->child.at(i));
             }
             else if (*root->pathdistange+root->distange.at(i)<*root->child.at(i)->pathdistange)
             {
                 root->child.at(i)->path.clear();
-                root->child.at(i)->path.insert(root->child.at(i)->path.begin(),root->path.begin(),root->path.end());
-                root->child.at(i)->path.push_back(root->child.at(i)->name);
+                root->child.at(i)->path=root->path+root->child.at(i)->name;
                 delete root->child.at(i)->pathdistange;
                 root->child.at(i)->pathdistange=new int(*root->pathdistange+root->distange.at(i));
                 shortestpath(root->child.at(i));
@@ -117,16 +115,12 @@ int main(int argc, char const *argv[])
             }
         }
     }
-    m[0]->dephfirst(m[9]);//visited and printed  all node
-    m[0]->shortestpath(m[9]);//shortest path from one node to another node and distance required to go from one node to another node
+    m[0]->dephfirst(m[5]);//visited and printed  all node
+    m[0]->shortestpath(m[1]);//shortest path from one node to another node and distance required to go from one node to another node
     std::cout<<std::endl;
     for (int i = 0; i < 10; i++)
     {
-        
-        for (auto &&j : m[i]->getpath())
-        {
-            std::cout<<j;
-        }
+        std::cout<<m[i]->getpath();
         if(m[i]->getpathdistange()!=NULL)
         std::cout<<"  "<<*m[i]->getpathdistange();//print node path       
         std::cout<<std::endl;
